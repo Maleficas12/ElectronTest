@@ -18,7 +18,7 @@ export function createMainWindow(): BrowserWindow {
     void window.loadURL(devServerUrl);
     window.webContents.openDevTools({ mode: 'detach' });
   } else {
-    void window.loadFile(path.join(__dirname, '../../renderer/index.html'));
+    void window.loadFile(path.join(__dirname, '../../../renderer/index.html'));
   }
 
   return window;
