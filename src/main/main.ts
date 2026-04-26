@@ -1,4 +1,4 @@
-import { app, ipcMain } from 'electron';
+import { app, ipcMain, BrowserWindow } from 'electron';
 import { APP_CHANNELS } from '../shared/channels';
 import { getAppInfo } from './services/app-info.service';
 import { configureAutoUpdates } from './services/auto-updater.service';
@@ -14,7 +14,7 @@ app.whenReady().then(() => {
   configureAutoUpdates();
 
   app.on('activate', () => {
-    if (app.getAllWindows().length === 0) {
+    if (BrowserWindow.getAllWindows().length === 0) {
       createMainWindow();
     }
   });
