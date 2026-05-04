@@ -13,7 +13,9 @@
     "build:app": "tauri build",
     "preview": "vite preview",
     "clean": "rimraf dist",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "predev": "node scripts/check-tauri-prereqs.mjs",
+    "dev:web": "vite"
   },
   "dependencies": {
     "@tauri-apps/api": "^2.8.0",
