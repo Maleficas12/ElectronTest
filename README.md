@@ -1,36 +1,36 @@
-# Electron + React + Plotly (Windows Build Ready)
+# Tauri + React + Plotly (Windows Build Ready)
 
-A simple, scalable starter app with:
-- Electron (main/preload process)
+A scalable starter app with:
+- Tauri (Rust backend + secure command bridge)
 - React (renderer UI)
 - Plotly.js for chart rendering
-- electron-builder (Windows installer target)
-- electron-updater wiring ready for future GitHub Releases workflow
+- Tauri bundling for standalone desktop installers/executables
 
 ## Project structure
 
-- `src/main`: Electron main process (window lifecycle, IPC, updater wiring)
-- `src/preload`: Safe bridge exposed to renderer
-- `src/shared`: Shared contracts/channels between layers
+- `src-tauri`: Tauri backend (commands, lifecycle, bundling config)
+- `src/shared`: Shared frontend/backend data contracts
 - `src/renderer`: React UI, hooks, services, and components
 
-## Run in development
+## Run in development (IDE friendly)
 
 ```bash
 npm install
 npm run dev
 ```
 
-## Build app
+This starts Vite and launches the Tauri app pointing at your local dev server.
+
+## Build frontend assets
 
 ```bash
 npm run build
 ```
 
-## Create a Windows executable installer
+## Build a standalone desktop app (.exe on Windows)
 
 ```bash
-npm run dist:win
+npm run build:app
 ```
 
-> Note: For publishing/updater later, update the `build.publish` owner/repo fields in `package.json`.
+On Windows, Tauri will generate a standalone executable/installer in `src-tauri/target/release/bundle`.

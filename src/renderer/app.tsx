@@ -7,7 +7,7 @@ export function App(): JSX.Element {
   return (
     <main className="page">
       <h1>Hello World 👋</h1>
-      <p>Electron + React + Plotly starter app.</p>
+      <p>Tauri + React + Plotly starter app.</p>
       {appInfo && (
         <p className="meta">
           {appInfo.appName} v{appInfo.appVersion} ({appInfo.platform})

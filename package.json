@@ -1,73 +1,34 @@
 {
-  "name": "electron-react-plotly-app",
+  "name": "tauri-react-plotly-app",
   "version": "0.1.0",
-  "description": "Scalable Electron + React + Plotly starter with Windows build target",
-  "main": "dist/electron/main/main.js",
+  "private": true,
+  "description": "Tauri + React + Plotly starter with Windows build target",
   "author": "",
   "license": "MIT",
+  "type": "module",
   "scripts": {
-    "dev": "concurrently -k \"npm:dev:renderer\" \"npm:dev:electron\"",
+    "dev": "tauri dev",
     "dev:renderer": "vite",
-    "dev:electron": "wait-on tcp:5173 && cross-env VITE_DEV_SERVER_URL=http://localhost:5173 electron .",
-    "build": "npm run clean && npm run build:renderer && npm run build:electron",
-    "build:renderer": "vite build",
-    "build:electron": "tsc -p tsconfig.electron.json",
-    "dist:win": "npm run build && cross-env CSC_IDENTITY_AUTO_DISCOVERY=false electron-builder --win nsis",
+    "build": "vite build",
+    "build:app": "tauri build",
     "preview": "vite preview",
     "clean": "rimraf dist",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "electron-updater": "^6.3.9",
+    "@tauri-apps/api": "^2.8.0",
     "plotly.js-dist-min": "^2.35.3",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
   },
   "devDependencies": {
+    "@tauri-apps/cli": "^2.8.0",
     "@types/node": "^22.10.1",
     "@types/react": "^18.3.13",
     "@types/react-dom": "^18.3.1",
     "@vitejs/plugin-react": "^4.3.4",
-    "concurrently": "^9.1.0",
-    "cross-env": "^7.0.3",
-    "electron": "^41.3.0",
-    "electron-builder": "^26.8.1",
     "rimraf": "^6.0.1",
     "typescript": "^5.7.2",
-    "vite": "^6.0.3",
-    "wait-on": "^8.0.1"
-  },
-  "build": {
-    "appId": "com.example.electronreactplotly",
-    "productName": "Electron React Plotly",
-    "files": [
-      "dist/**/*",
-      "package.json"
-    ],
-    "directories": {
-      "buildResources": "build"
-    },
-    "publish": [
-      {
-        "provider": "github",
-        "owner": "YOUR_GITHUB_OWNER",
-        "repo": "YOUR_GITHUB_REPO"
-      }
-    ],
-    "win": {
-      "target": [
-        {
-          "target": "nsis",
-          "arch": [
-            "x64"
-          ]
-        }
-      ],
-      "signAndEditExecutable": false
-    },
-    "nsis": {
-      "oneClick": false,
-      "allowToChangeInstallationDirectory": true
-    }
+    "vite": "^6.0.3"
   }
 }
