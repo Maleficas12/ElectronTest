@@ -35,7 +35,7 @@
   },
   "plugins": {
     "updater": {
-      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IEM0NTE4MjVGNTc5QUY0QUMKUldTczlKcFhYNEpSeFAzRGtiWUljVXZLWC9HY2ZGM3R4SGNhZndKRWxMVFlPc3ZxTlJhQ3B0Wm4K",
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDEyMjg5RjgxNDEyNTUzNjMKUldSalV5VkJnWjhvRXAwMHM2TFpKZndUOGZ1ZmxrMExuTDVLUThKaXgxR2ZJd0s0bXBrUnpFQ1YK",
       "endpoints": [
         "https://github.com/Maleficas12/ElectronTest/releases/latest/download/latest.json"
       ],
