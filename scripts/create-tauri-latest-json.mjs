@@ -1,10 +1,10 @@
-import { readdir, readFile, writeFile } from 'node:fs/promises';
-import { basename, join } from 'node:path';
+import { copyFile, mkdir, readdir, readFile, rm, writeFile } from 'node:fs/promises';
+import { join } from 'node:path';
 
-const [artifactDir, outputPath] = process.argv.slice(2);
+const [artifactDir, outputDir] = process.argv.slice(2);
 
-if (!artifactDir || !outputPath) {
-  console.error('Usage: node scripts/create-tauri-latest-json.mjs <artifact-dir> <output-path>');
+if (!artifactDir || !outputDir) {
+  console.error('Usage: node scripts/create-tauri-latest-json.mjs <artifact-dir> <output-dir>');
   process.exit(1);
 }
 
@@ -17,10 +17,13 @@ if (!tagName || !repository) {
 }
 
 const files = await readdir(artifactDir);
-const installerName = files.find((file) => file.endsWith('-setup.exe'));
+const version = tagName.replace(/^v/, '');
+const installerName = files.find(
+  (file) => file.includes(`_${version}_`) && file.endsWith('-setup.exe')
+);
 
 if (!installerName) {
-  console.error(`No NSIS setup executable found in ${artifactDir}.`);
+  console.error(`No NSIS setup executable for version ${version} found in ${artifactDir}.`);
   process.exit(1);
 }
 
@@ -31,11 +34,15 @@ if (!files.includes(signatureName)) {
   process.exit(1);
 }
 
-const version = tagName.replace(/^v/, '');
+const stagedInstallerName = `Tauri-React-Plotly_${version}_x64-setup.exe`;
+const stagedSignatureName = `${stagedInstallerName}.sig`;
 const signature = (await readFile(join(artifactDir, signatureName), 'utf8')).trim();
-const assetUrl = `https://github.com/${repository}/releases/download/${tagName}/${encodeURIComponent(
-  basename(installerName)
-)}`;
+const assetUrl = `https://github.com/${repository}/releases/download/${tagName}/${stagedInstallerName}`;
+
+await rm(outputDir, { recursive: true, force: true });
+await mkdir(outputDir, { recursive: true });
+await copyFile(join(artifactDir, installerName), join(outputDir, stagedInstallerName));
+await copyFile(join(artifactDir, signatureName), join(outputDir, stagedSignatureName));
 
 const latestJson = {
   version,
@@ -49,4 +56,9 @@ const latestJson = {
   }
 };
 
-await writeFile(outputPath, `${JSON.stringify(latestJson, null, 2)}\n`);
+await writeFile(join(outputDir, 'latest.json'), `${JSON.stringify(latestJson, null, 2)}\n`);
+
+console.log(`Staged updater release assets in ${outputDir}:`);
+console.log(`- ${stagedInstallerName}`);
+console.log(`- ${stagedSignatureName}`);
+console.log('- latest.json');
