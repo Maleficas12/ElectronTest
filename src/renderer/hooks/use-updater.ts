@@ -22,6 +22,7 @@ type UseUpdaterResult = {
   update: AvailableUpdate | null;
   progress: UpdateProgress | null;
   error: string | null;
+  errorTitle: string | null;
   install: () => Promise<void>;
   dismiss: () => void;
 };
@@ -33,6 +34,7 @@ export function useUpdater(): UseUpdaterResult {
   const [update, setUpdate] = useState<AvailableUpdate | null>(null);
   const [progress, setProgress] = useState<UpdateProgress | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [errorTitle, setErrorTitle] = useState<string | null>(null);
 
   useEffect(() => {
     if (didCheck.current) {
@@ -59,6 +61,7 @@ export function useUpdater(): UseUpdaterResult {
 
         console.info('Update check skipped or failed.', reason);
         setError(reason instanceof Error ? reason.message : 'Update check failed.');
+        setErrorTitle('Could not check for updates');
         setStatus('error');
       });
 
@@ -74,12 +77,14 @@ export function useUpdater(): UseUpdaterResult {
 
     setStatus('installing');
     setError(null);
+    setErrorTitle(null);
 
     try {
       await installUpdate(pendingUpdate.current, setProgress);
       setStatus('installed');
     } catch (reason) {
       setError(reason instanceof Error ? reason.message : 'Update installation failed.');
+      setErrorTitle('Could not install update');
       setStatus('error');
     }
   }, []);
@@ -93,6 +98,7 @@ export function useUpdater(): UseUpdaterResult {
     update,
     progress,
     error,
+    errorTitle,
     install,
     dismiss
   };

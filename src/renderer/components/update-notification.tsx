@@ -9,7 +9,7 @@ function formatBytes(value: number): string {
 }
 
 export function UpdateNotification(): JSX.Element | null {
-  const { status, update, progress, error, install, dismiss } = useUpdater();
+  const { status, update, progress, error, errorTitle, install, dismiss } = useUpdater();
 
   if (status === 'checking') {
     return <aside className="update-banner">Checking for updates...</aside>;
@@ -62,7 +62,7 @@ export function UpdateNotification(): JSX.Element | null {
     return (
       <aside className="update-banner update-banner--error">
         <div>
-          <strong>Could not check for updates</strong>
+          <strong>{errorTitle ?? 'Update failed'}</strong>
           <p>{error}</p>
         </div>
         <button type="button" className="button" onClick={dismiss}>
