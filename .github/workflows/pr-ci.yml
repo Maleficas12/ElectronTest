@@ -1,4 +1,4 @@
-name: PR Build & Mock Tests
+name: PR Build & Smoke Tests
 
 on:
   pull_request:
@@ -31,10 +31,8 @@ jobs:
       - name: Build
         run: npm run build
 
-      - name: Run mock tests
-        run: |
-          echo "Running mock test suite..."
-          node -e "const checks=[true, 1+1===2, 'main'.includes('ai')===false]; if(!checks.every(Boolean)){process.exit(1)}; console.log('Mock tests passed ✅')"
+      - name: Run smoke tests
+        run: ./tests/smoke_tests
 
       - name: Upload build artifact
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'

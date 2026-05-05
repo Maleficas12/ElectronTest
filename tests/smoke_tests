@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+PORT="${PORT:-4173}"
+HOST="${HOST:-127.0.0.1}"
+URL="http://${HOST}:${PORT}"
+
+npm run preview -- --host "$HOST" --port "$PORT" >/tmp/smoke-preview.log 2>&1 &
+PREVIEW_PID=$!
+
+cleanup() {
+  if kill -0 "$PREVIEW_PID" 2>/dev/null; then
+    kill "$PREVIEW_PID" 2>/dev/null || true
+    wait "$PREVIEW_PID" 2>/dev/null || true
+  fi
+}
+trap cleanup EXIT
+
+for _ in {1..30}; do
+  if curl --silent --show-error --fail "$URL" >/tmp/smoke-response.html; then
+    if grep -qi '<!doctype html>' /tmp/smoke-response.html; then
+      echo "Smoke test passed: app started and served HTML at $URL"
+      exit 0
+    fi
+  fi
+  sleep 1
+done
+
+echo "Smoke test failed: app did not become ready at $URL"
+echo "--- npm run preview logs ---"
+cat /tmp/smoke-preview.log
+exit 1
