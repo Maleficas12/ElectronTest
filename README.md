@@ -60,15 +60,16 @@ The app uses Tauri's updater plugin and checks this public release asset on star
 https://github.com/Maleficas12/ElectronTest/releases/latest/download/latest.json
 ```
 
-An updater keypair has been generated locally under `.tauri/`, which is ignored by git. To generate a fresh keypair instead:
+Generate the updater signing keypair yourself and keep the private key/password private. Only the public key belongs in `src-tauri/tauri.conf.json`.
 
-```bash
-npx tauri signer generate -w .tauri/electron-test.key -p "<password>" --ci --force
+```powershell
+npx tauri signer generate -w "$env:USERPROFILE\.tauri\electron-test.key"
 ```
 
 Then:
-- Keep the public key in `src-tauri/tauri.conf.json`.
-- Add the private key content from `.tauri/electron-test.key` as the GitHub Actions secret `TAURI_SIGNING_PRIVATE_KEY`.
-- Add the password from `.tauri/electron-test.key.password` as the GitHub Actions secret `TAURI_SIGNING_PRIVATE_KEY_PASSWORD`.
+- Copy the generated public key into `src-tauri/tauri.conf.json`.
+- Add the full private key file contents as the GitHub Actions secret `TAURI_SIGNING_PRIVATE_KEY`.
+- Add the password you typed during key generation as `TAURI_SIGNING_PRIVATE_KEY_PASSWORD`.
+- Never commit or paste the private key/password into chat, PR comments, logs, or docs.
 
-The `main` CI build uploads the signed NSIS installer and `.sig`; the tag promotion workflow publishes those files plus `latest.json` to GitHub Releases.
+Pull requests build an unsigned Windows installer with updater artifacts disabled via `src-tauri/tauri.pr.conf.json`. The `main` CI build uploads the signed NSIS installer and `.sig`; the tag promotion workflow publishes those files plus `latest.json` to GitHub Releases.
