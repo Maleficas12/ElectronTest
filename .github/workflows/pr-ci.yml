@@ -41,3 +41,30 @@ jobs:
           name: web-dist
           path: dist
           if-no-files-found: error
+
+  build-windows-installer:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build Windows installer
+        run: npm run build:app
+
+      - name: Upload installer artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-installer
+          path: src-tauri/target/release/bundle/nsis/*-setup.exe
+          if-no-files-found: error

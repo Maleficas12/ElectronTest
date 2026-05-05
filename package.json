@@ -1,6 +1,6 @@
 {
   "name": "tauri-react-plotly-app",
-  "version": "0.1.0",
+  "version": "0.1.0-pre.2",
   "private": true,
   "description": "Tauri + React + Plotly starter with Windows build target",
   "author": "",

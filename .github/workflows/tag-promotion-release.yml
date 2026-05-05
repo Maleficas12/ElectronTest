@@ -23,14 +23,14 @@ jobs:
           workflow: pr-ci.yml
           workflow_conclusion: success
           commit: ${{ github.sha }}
-          name: web-dist
+          name: app-installer
           path: promoted-build
           if_no_artifact_found: fail
 
-      - name: Archive promoted build
+      - name: Archive promoted installer
         run: |
           cd promoted-build
-          zip -r ../web-dist-${{ github.ref_name }}.zip .
+          zip -r ../app-installer-${{ github.ref_name }}.zip .
 
       - name: Create GitHub release and upload promoted build
         uses: softprops/action-gh-release@v2
@@ -38,4 +38,4 @@ jobs:
           tag_name: ${{ github.ref_name }}
           name: Release ${{ github.ref_name }}
           generate_release_notes: true
-          files: web-dist-${{ github.ref_name }}.zip
+          files: app-installer-${{ github.ref_name }}.zip
