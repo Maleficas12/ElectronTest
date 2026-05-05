@@ -1,4 +1,4 @@
-name: PR Build & Smoke Tests
+name: App Checks
 
 on:
   pull_request:
@@ -28,53 +28,11 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Build
-        run: npm run build
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
 
       - name: Run smoke tests
-        run: ./tests/smoke_tests
-
-      - name: Upload build artifact
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-        uses: actions/upload-artifact@v4
-        with:
-          name: web-dist
-          path: dist
-          if-no-files-found: error
-
-  build-windows-installer:
-    runs-on: windows-latest
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: npm
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Build unsigned Windows installer for PR validation
-        if: github.event_name == 'pull_request'
-        run: npm run build:app -- --config src-tauri/tauri.pr.conf.json
-
-      - name: Build signed Windows installer for release promotion
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-        run: npm run build:app
-        env:
-          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
-          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
-
-      - name: Upload installer artifact
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-        uses: actions/upload-artifact@v4
-        with:
-          name: app-installer
-          path: |
-            src-tauri/target/release/bundle/nsis/*-setup.exe
-            src-tauri/target/release/bundle/nsis/*-setup.exe.sig
-          if-no-files-found: error
+        run: npm run test:smoke

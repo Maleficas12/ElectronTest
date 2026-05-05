@@ -14,6 +14,8 @@
     "preview": "vite preview",
     "clean": "rimraf dist",
     "typecheck": "tsc --noEmit",
+    "test:smoke": "playwright test",
+    "test:smoke:headed": "playwright test --headed",
     "predev": "node scripts/check-tauri-prereqs.mjs",
     "dev:web": "vite"
   },
@@ -26,6 +28,7 @@
     "react-dom": "^18.3.1"
   },
   "devDependencies": {
+    "@playwright/test": "^1.59.1",
     "@tauri-apps/cli": "^2.8.0",
     "@types/node": "^22.10.1",
     "@types/react": "^18.3.13",
