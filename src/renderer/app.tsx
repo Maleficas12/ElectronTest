@@ -6,8 +6,8 @@ export function App(): JSX.Element {
 
   return (
     <main className="page">
-      <h1>Hello World 👋</h1>
-      <p>Tauri + React + Plotly starter app.</p>
+      <h1>Hello World Guy👋</h1>
+      <p>Tauri + React + Plotly starter app. I cant believe this works.</p>
       {appInfo && (
         <p className="meta">
           {appInfo.appName} v{appInfo.appVersion} ({appInfo.platform})
