@@ -1,0 +1,41 @@
+name: Promote Build to Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+  actions: read
+
+jobs:
+  promote:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download artifact from latest successful main build for this commit
+        uses: dawidd6/action-download-artifact@v6
+        with:
+          workflow: pr-ci.yml
+          workflow_conclusion: success
+          commit: ${{ github.sha }}
+          name: web-dist
+          path: promoted-build
+          if_no_artifact_found: fail
+
+      - name: Archive promoted build
+        run: |
+          cd promoted-build
+          zip -r ../web-dist-${{ github.ref_name }}.zip .
+
+      - name: Create GitHub release and upload promoted build
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: Release ${{ github.ref_name }}
+          generate_release_notes: true
+          files: web-dist-${{ github.ref_name }}.zip
