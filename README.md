@@ -51,3 +51,5 @@ npm run build:app
 ```
 
 On Windows, Tauri will generate a standalone executable/installer in `src-tauri/target/release/bundle`.
+
+Arbitrary code change to trigger workflow
