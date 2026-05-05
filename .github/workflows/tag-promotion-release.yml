@@ -54,8 +54,8 @@ jobs:
       - name: Typecheck
         run: npm run typecheck
 
-      - name: Install Playwright browsers
-        run: npx playwright install --with-deps chromium
+      - name: Show Chrome version
+        run: google-chrome --version
 
       - name: Run smoke tests
         run: npm run test:smoke

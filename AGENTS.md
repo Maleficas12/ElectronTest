@@ -16,6 +16,8 @@
 ## Testing
 
 - Use Playwright smoke tests for browser-level validation.
+- CI smoke tests use the system Chrome browser provided by the GitHub runner.
+- Local machines may need a one-time `npx playwright install chromium`, unless running with `PLAYWRIGHT_CHANNEL=chrome`.
 - Add or update tests in `tests/smoke` when changing visible renderer behavior.
 - Keep smoke tests focused on stable user-visible behavior rather than implementation details.
 
