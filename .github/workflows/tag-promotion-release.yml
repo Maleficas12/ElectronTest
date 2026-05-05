@@ -31,10 +31,9 @@ jobs:
         run: |
           tag_version="${GITHUB_REF_NAME#v}"
           package_version="$(node -p "require('./package.json').version")"
-          tauri_version="$(node -p "require('./src-tauri/tauri.conf.json').version")"
 
-          if [[ "$tag_version" != "$package_version" || "$tag_version" != "$tauri_version" ]]; then
-            echo "Tag version ${tag_version} does not match package ${package_version} and Tauri ${tauri_version}."
+          if [[ "$tag_version" != "$package_version" ]]; then
+            echo "Tag version ${tag_version} does not match package ${package_version}."
             exit 1
           fi
 
@@ -48,6 +47,9 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
+
+      - name: Check app version mirrors
+        run: npm run version:check
 
       - name: Typecheck
         run: npm run typecheck

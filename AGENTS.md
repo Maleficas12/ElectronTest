@@ -3,8 +3,15 @@
 ## Validation
 
 - Before finishing new feature work, run `npm run typecheck` and `npm run test:smoke`.
+- Before finishing version or release metadata changes, run `npm run version:check`.
 - If either command cannot be run, say why in the final response and describe the remaining risk.
 - Do not run installer builds for ordinary feature work unless the task changes packaging, signing, updater behavior, or release workflows.
+
+## Versioning
+
+- Treat `package.json` as the only human-edited app version.
+- After changing `package.json` version, run `npm run version:sync`.
+- Do not manually edit mirrored app versions in `src-tauri/tauri.conf.json`, `src-tauri/Cargo.toml`, or `src-tauri/Cargo.lock`.
 
 ## Testing
 
