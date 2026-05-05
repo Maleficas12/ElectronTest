@@ -1,5 +1,5 @@
 [package]
-name = "electron-test"
+name = "tauri-react-plotly-app"
 version = "0.1.4"
 description = "Tauri + React + Plotly app"
 authors = ["you"]
