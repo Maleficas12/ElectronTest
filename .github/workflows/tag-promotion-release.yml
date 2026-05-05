@@ -27,10 +27,8 @@ jobs:
           path: promoted-build
           if_no_artifact_found: fail
 
-      - name: Archive promoted installer
-        run: |
-          cd promoted-build
-          zip -r ../app-installer-${{ github.ref_name }}.zip .
+      - name: Generate Tauri updater metadata
+        run: node scripts/create-tauri-latest-json.mjs promoted-build promoted-build/latest.json
 
       - name: Create GitHub release and upload promoted build
         uses: softprops/action-gh-release@v2
@@ -38,4 +36,4 @@ jobs:
           tag_name: ${{ github.ref_name }}
           name: Release ${{ github.ref_name }}
           generate_release_notes: true
-          files: app-installer-${{ github.ref_name }}.zip
+          files: promoted-build/*

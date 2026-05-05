@@ -32,3 +32,104 @@ h1 {
   overflow: hidden;
   background: white;
 }
+
+.update-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.875rem 1rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  background: #ffffff;
+  box-shadow: 0 8px 22px rgba(15, 23, 42, 0.08);
+}
+
+.update-banner strong {
+  display: block;
+}
+
+.update-banner p {
+  margin: 0.25rem 0 0;
+  color: #475569;
+  font-size: 0.95rem;
+}
+
+.update-banner--available {
+  border-color: #86efac;
+  background: #f0fdf4;
+}
+
+.update-banner--error {
+  border-color: #fecaca;
+  background: #fef2f2;
+}
+
+.update-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.button {
+  min-height: 2.25rem;
+  padding: 0 0.875rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  background: #ffffff;
+  color: #0f172a;
+  font: inherit;
+  cursor: pointer;
+}
+
+.button:hover {
+  background: #f8fafc;
+}
+
+.button--primary {
+  border-color: #2563eb;
+  background: #2563eb;
+  color: #ffffff;
+}
+
+.button--primary:hover {
+  background: #1d4ed8;
+}
+
+.progress-track {
+  width: min(16rem, 35vw);
+  height: 0.5rem;
+  flex-shrink: 0;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #bbf7d0;
+}
+
+.progress-fill {
+  height: 100%;
+  border-radius: inherit;
+  background: #16a34a;
+}
+
+@media (max-width: 700px) {
+  .page {
+    padding: 1rem;
+  }
+
+  .update-banner {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .update-actions {
+    width: 100%;
+  }
+
+  .button {
+    flex: 1;
+  }
+
+  .progress-track {
+    width: 100%;
+  }
+}

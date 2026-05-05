@@ -51,3 +51,24 @@ npm run build:app
 ```
 
 On Windows, Tauri will generate a standalone executable/installer in `src-tauri/target/release/bundle`.
+
+## Configure app updates
+
+The app uses Tauri's updater plugin and checks this public release asset on startup:
+
+```text
+https://github.com/Maleficas12/ElectronTest/releases/latest/download/latest.json
+```
+
+An updater keypair has been generated locally under `.tauri/`, which is ignored by git. To generate a fresh keypair instead:
+
+```bash
+npx tauri signer generate -w .tauri/electron-test.key -p "<password>" --ci --force
+```
+
+Then:
+- Keep the public key in `src-tauri/tauri.conf.json`.
+- Add the private key content from `.tauri/electron-test.key` as the GitHub Actions secret `TAURI_SIGNING_PRIVATE_KEY`.
+- Add the password from `.tauri/electron-test.key.password` as the GitHub Actions secret `TAURI_SIGNING_PRIVATE_KEY_PASSWORD`.
+
+The `main` CI build uploads the signed NSIS installer and `.sig`; the tag promotion workflow publishes those files plus `latest.json` to GitHub Releases.
