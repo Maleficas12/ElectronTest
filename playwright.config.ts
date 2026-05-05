@@ -2,6 +2,7 @@ import { defineConfig, devices } from '@playwright/test';
 
 const port = Number(process.env.PORT ?? 4173);
 const host = process.env.HOST ?? '127.0.0.1';
+const browserChannel = process.env.PLAYWRIGHT_CHANNEL ?? (process.env.CI ? 'chrome' : undefined);
 
 export default defineConfig({
   testDir: './tests/smoke',
@@ -18,7 +19,10 @@ export default defineConfig({
   projects: [
     {
       name: 'chromium',
-      use: { ...devices['Desktop Chrome'] }
+      use: {
+        ...devices['Desktop Chrome'],
+        channel: browserChannel
+      }
     }
   ],
   webServer: {
