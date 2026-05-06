@@ -58,6 +58,14 @@ src/renderer/
 
 Use `react-router-dom` for page routes and a query/cache layer such as `@tanstack/react-query` for sidecar calls, polling, loading states, and cache invalidation. Keep global state small and explicit: selected session, selected biomarker, sidebar state, visualization settings, and active job summaries.
 
+Keep domain state separate from rendering state:
+
+- domain data: sessions, metadata, biomarkers, visualization payloads, jobs, exports
+- UI state: open modals, selected tabs, sidebar collapsed state, transient control values
+- derived view models: table rows, disabled action states, status labels, chart traces
+
+Complex transformations should live in pure, unit-tested functions rather than React components. This includes Plotly trace building, histogram shaping, biomarker availability, session status labels, export labels, and disabled-state rules. Components should mostly compose data and render UI.
+
 ## Visual Design Direction
 
 The new UI should look and feel close to the guide screenshots:
@@ -122,6 +130,12 @@ Use modern React components and icons, but preserve the old app's information de
 Use a Python sidecar as the default strategy for reusing the old application's proven data engineering code.
 
 The sidecar should expose stable JSON commands. Tauri should own process spawning and translate sidecar responses into typed frontend contracts. React components should never call generic process APIs directly.
+
+The sidecar should also expose a lightweight machine-readable command manifest. The manifest should list supported commands, basic input/output schema names, and version information. This gives humans, tests, and AI agents a reliable way to discover sidecar capabilities without reading implementation details.
+
+Manifest command candidate:
+
+- `worker.manifest`
 
 Initial sidecar command candidates:
 
@@ -207,6 +221,8 @@ Core contracts:
 
 These contracts should be stable enough for Playwright fixtures, sidecar contract tests, and future release validation.
 
+Treat these contracts as the app's main integration boundary. When a feature needs new data, add or extend a contract first, then implement the Python response, Tauri command, React query, and UI. This makes feature work easier for both human developers and AI agents because each layer has an explicit shape to satisfy.
+
 ## Testing Strategy
 
 Most functionality should be testable via Playwright. The UI should expose stable `data-testid` attributes on major surfaces and actions:
@@ -227,6 +243,26 @@ Most functionality should be testable via Playwright. The UI should expose stabl
 - processing queue overlay
 
 Tests should avoid native dialogs where possible. For local and CI tests, provide fixture-backed or test-mode command responses for native folder selection and sidecar calls.
+
+The first migrated features should be built as testable vertical slices:
+
+```text
+test session data -> Python sidecar contract -> Tauri command -> React query -> UI -> Playwright assertion
+```
+
+Each major page should have Playwright page-object helpers so tests and AI agents can use the same vocabulary for common actions such as selecting a recording, opening settings, switching biomarkers, queueing exports, or checking job status.
+
+In dev/test mode only, expose enough diagnostics for browser-driven debugging:
+
+- active test mode
+- configured test data parent
+- selected session
+- selected biomarker
+- sidecar health
+- last sidecar/API error
+- active processing/export jobs
+
+This can be hidden from production builds, but it makes Playwright MCP and other browser automation tools much easier to use.
 
 Playwright suites should be split into short and long groups:
 
