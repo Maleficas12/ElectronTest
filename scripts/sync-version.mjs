@@ -48,13 +48,29 @@ async function syncCargoTomlVersion() {
   plannedWrites.push([cargoTomlPath, source.replace(packageBlockPattern, `$1${appVersion}$3`)]);
 }
 
-async function syncCargoLockVersion() {
+async function readCargoPackageName() {
+  const source = await readFile(cargoTomlPath, 'utf8');
+  const packageNamePattern = /^(\[package\][\s\S]*?^name = ")([^"]+)(")/m;
+  const match = source.match(packageNamePattern);
+
+  if (!match) {
+    console.error(`Could not find [package] name in ${cargoTomlPath}.`);
+    process.exit(1);
+  }
+
+  return match[2];
+}
+
+async function syncCargoLockVersion(packageName) {
   const source = await readFile(cargoLockPath, 'utf8');
-  const packageBlockPattern = /(\[\[package\]\]\r?\nname = "electron-test"\r?\nversion = ")([^"]+)(")/;
+  const escapedPackageName = packageName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const packageBlockPattern = new RegExp(
+    `(\\[\\[package\\]\\]\\r?\\nname = "${escapedPackageName}"\\r?\\nversion = ")([^"]+)(")`
+  );
   const match = source.match(packageBlockPattern);
 
   if (!match) {
-    console.error(`Could not find electron-test package version in ${cargoLockPath}.`);
+    console.error(`Could not find ${packageName} package version in ${cargoLockPath}.`);
     process.exit(1);
   }
 
@@ -62,13 +78,15 @@ async function syncCargoLockVersion() {
     return;
   }
 
-  mismatches.push(`Cargo.lock electron-test: ${match[2]} -> ${appVersion}`);
+  mismatches.push(`Cargo.lock ${packageName}: ${match[2]} -> ${appVersion}`);
   plannedWrites.push([cargoLockPath, source.replace(packageBlockPattern, `$1${appVersion}$3`)]);
 }
 
+const cargoPackageName = await readCargoPackageName();
+
 await syncJsonVersion(tauriConfigPath, 'tauri.conf.json');
 await syncCargoTomlVersion();
-await syncCargoLockVersion();
+await syncCargoLockVersion(cargoPackageName);
 
 if (mismatches.length === 0) {
   console.log(`All app version mirrors match package.json version ${appVersion}.`);

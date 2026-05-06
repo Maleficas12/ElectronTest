@@ -63,7 +63,7 @@ https://github.com/Maleficas12/ElectronTest/releases/latest/download/latest.json
 Generate the updater signing keypair yourself and keep the private key/password private. Only the public key belongs in `src-tauri/tauri.conf.json`.
 
 ```powershell
-npx tauri signer generate -w "$env:USERPROFILE\.tauri\electron-test.key"
+npx tauri signer generate -w "$env:USERPROFILE\.tauri\tauri-react-plotly.key"
 ```
 
 Then:
@@ -72,4 +72,11 @@ Then:
 - Add the password you typed during key generation as `TAURI_SIGNING_PRIVATE_KEY_PASSWORD`.
 - Never commit or paste the private key/password into chat, PR comments, logs, or docs.
 
-Pull requests build an unsigned Windows installer with updater artifacts disabled via `src-tauri/tauri.pr.conf.json`. The `main` CI build uploads the signed NSIS installer and `.sig`; the tag promotion workflow publishes those files plus `latest.json` to GitHub Releases.
+Pull requests and pushes to `main` run fast app validation only: version mirror checks, TypeScript typechecking, and Playwright smoke tests. Signed Windows installers are built only by the tag release workflow.
+
+To publish a release:
+- Update `package.json` version and run `npm run version:sync`.
+- Merge the change to `main`.
+- Create and push a matching tag such as `v0.1.4`.
+
+The release workflow checks that the tag is reachable from `main`, verifies the tag matches `package.json`, reruns validation, builds the signed NSIS installer with updater artifacts, stages the installer as a stable hyphenated release asset, generates `latest.json`, and uploads the installer, `.sig`, and metadata to GitHub Releases.
